@@ -171,12 +171,12 @@ def random_search(fun, lbounds, ubounds, budget):
 # lambd : offspring population size
 # ===============================================
 def algorithme2(fun, n, lambd, budget):
-    mu = np.floor(lambd/4) # number of parents
+    mu = int(np.floor(lambd/4)) # number of parents
     t = 1/np.sqrt(n)
     t1 = 1/np.sqrt(n**(1/4))
     population = []
 
-    x = np.random.random_sample([n])
+    X = np.random.random_sample([n])
     sigma = np.random.random_sample([n])
 
     global_step_size = np.zeros(lambd)
@@ -184,27 +184,31 @@ def algorithme2(fun, n, lambd, budget):
     vector_sigma = np.zeros((lambd, n))
     vector_x = np.zeros((lambd, n))
     z = np.zeros((lambd, n))
-    while budget > 0: # Quel budget mettre ?
+
+    precedent_population = []
+    for i in range (0, budget) : # Quel budget mettre ?
         for k in range(0, lambd):
+            precedent_population = population
             global_step_size[k] = t * np.random.normal()
-            coordinate_wise_sigma[k] = t1 * np.random.multivariate_normal(0, np.identity(n), size=n)
-            z[k] = np.random.multivariate_normal(0, np.identity(n), size=n)
+            coordinate_wise_sigma[k, :] = t1 * np.random.multivariate_normal([0 for i in range(0,n)], np.identity(n))
+            z[k, :] = np.random.multivariate_normal([0 for i in range(0,n)], np.identity(n))
 
             # mutation
-            vector_sigma[k] = np.multiply(sigma, np.exp(coordinate_wise_sigma)) * global_step_size
-            vector_x[k] = x + np.multiply(vector_sigma[k], z[k])
+            vector_sigma[k] = np.multiply(sigma, np.exp(coordinate_wise_sigma[k])) * global_step_size[k]
+            vector_x[k] = X + np.multiply(vector_sigma[k], z[k])
 
         indicies = list(range(0, lambd))
-        indicies.sort(key=lambda x : fun(x))
-        population = [(vector_x[i], vector_sigma[i], fun(vector_x[i]) for i in indicies[:mu])]
+
+        indicies.sort(key=lambda x: fun(vector_x[x]))
+        population = [(vector_x[i], vector_sigma[i], fun(vector_x[i])) for i in indicies[:mu]]
 
         # recombination
-        sigma = 0; x = 0
+        sigma = 0; X = 0
         for (xk, sigk, fxk) in population:
             sigma += sigk
-            x += xk
+            X += xk
         sigma /= float(mu)
-        x /= float(mu)
+        X /= float(mu)
 
     return population[0][0]
 
@@ -273,6 +277,9 @@ def coco_optimize(solver, fun, max_evals, max_runs=1e9):
         if solver.__name__ in ("random_search", ):
             solver(fun, fun.lower_bounds, fun.upper_bounds,
                    remaining_evals)
+        elif solver.__name__ in ("algorithme2"):
+            solver(fun, fun.dimension, 5 *fun.dimension, remaining_evals)
+
         elif solver.__name__ == 'fmin' and solver.__globals__['__name__'] in ['cma', 'cma.evolution_strategy', 'cma.es']:
             if x0[0] == center[0]:
                 sigma0 = 0.02
@@ -320,7 +327,7 @@ max_runs = 1e9  # number of (almost) independent trials per problem instance
 number_of_batches = 1  # allows to run everything in several batches
 current_batch = 1      # 1..number_of_batches
 ##############################################################################
-SOLVER = random_search
+SOLVER = algorithme2
 #SOLVER = my_solver # fmin_slsqp # SOLVER = cma.fmin
 suite_name = "bbob-biobj"
 # suite_name = "bbob"
