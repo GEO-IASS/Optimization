@@ -1,0 +1,1 @@
+03/10/2016 : L'algorithme 2 est implémenté et tourne. 
