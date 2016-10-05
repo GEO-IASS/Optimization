@@ -1,0 +1,11 @@
+Tests en fonction des budgets & Dimensions :
+
+Budgets = [2,5,10, 20, 50,75, 100, 200, ..., 500]
+
+Dimension Max : 10
+
+Budgets par personne :
+Nicolas : 200, 75
+Abdelhadi : 2, 10, 100
+Sihem : 5, 10, 20, 50
+Stephen : 400, 500
