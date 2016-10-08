@@ -176,31 +176,29 @@ def algorithme2(fun, n, lambd, budget):
     t1 = 1/np.sqrt(n**(1/4))
     population = []
 
-    X = np.random.random_sample([n])
-    sigma = np.random.random_sample([n])
+    # We generate randoms numbers between -5 and 5 because we know than the minimum is around here
+    X = 10 * np.random.random_sample([n]) - 5
+    # We want to have sigma very small at the beginning
+    sigma = 0.01*np.random.random_sample([n])
 
     global_step_size = np.zeros(lambd)
     coordinate_wise_sigma = np.zeros((lambd, n))
     vector_sigma = np.zeros((lambd, n))
     vector_x = np.zeros((lambd, n))
     z = np.zeros((lambd, n))
-
-    precedent_population = []
-    for i in range (0, budget) : # Quel budget mettre ?
+    while budget > 0:
         for k in range(0, lambd):
-            precedent_population = population
             global_step_size[k] = t * np.random.normal()
             coordinate_wise_sigma[k, :] = t1 * np.random.multivariate_normal([0 for i in range(0,n)], np.identity(n))
             z[k, :] = np.random.multivariate_normal([0 for i in range(0,n)], np.identity(n))
 
             # mutation
-            vector_sigma[k] = np.multiply(sigma, np.exp(coordinate_wise_sigma[k])) * global_step_size[k]
+            vector_sigma[k] = np.multiply(sigma, np.exp(coordinate_wise_sigma[k])) * np.exp(global_step_size[k])
             vector_x[k] = X + np.multiply(vector_sigma[k], z[k])
 
-        indicies = list(range(0, lambd))
-
-        indicies.sort(key=lambda x: fun(vector_x[x]))
-        population = [(vector_x[i], vector_sigma[i], fun(vector_x[i])) for i in indicies[:mu]]
+        childs = [(vector_x[i], vector_sigma[i], fun(vector_x[i])) for i in range(0, lambd)]
+        childs.sort(key=lambda xsf: xsf[2])
+        population = childs[:mu]
 
         # recombination
         sigma = 0; X = 0
@@ -209,6 +207,7 @@ def algorithme2(fun, n, lambd, budget):
             X += xk
         sigma /= float(mu)
         X /= float(mu)
+        budget -= lambd # We evaluated the function lambda times
 
     return population[0][0]
 
@@ -218,14 +217,7 @@ def algorithme2(fun, n, lambd, budget):
 # ===============================================
 def batch_loop(solver, suite, observer, budget,
                max_runs, current_batch, number_of_batches):
-    """loop over all problems in `suite` calling
-    `coco_optimize(solver, problem, budget * problem.dimension, max_runs)`
-    for each eligible problem.
-
-    A problem is eligible if
-    `problem_index + current_batch - 1` modulo `number_of_batches`
-    equals to zero.
-    """
+    """a"""
     addressed_problems = []
     short_info = ShortInfo()
     for problem_index, problem in enumerate(suite):
@@ -322,7 +314,7 @@ def coco_optimize(solver, fun, max_evals, max_runs=1e9):
 # ===============================================
 ######################### CHANGE HERE ########################################
 # CAVEAT: this might be modified from input args
-budget = 2  # maxfevals = budget x dimension ### INCREASE budget WHEN THE DATA CHAIN IS STABLE ###
+budget = 10  # maxfevals = budget x dimension ### INCREASE budget WHEN THE DATA CHAIN IS STABLE ###
 max_runs = 1e9  # number of (almost) independent trials per problem instance
 number_of_batches = 1  # allows to run everything in several batches
 current_batch = 1      # 1..number_of_batches
@@ -332,7 +324,7 @@ SOLVER = algorithme2
 suite_name = "bbob-biobj"
 # suite_name = "bbob"
 suite_instance = "year:2016"
-suite_options = ""  # "dimensions: 2,3,5,10,20 "  # if 40 is not desired
+suite_options = "dimensions: 2,3,5 "  # "dimensions: 2,3,5,10,20 "  # if 40 is not desired
 observer_name = default_observers()[suite_name]
 observer_options = (
     ' result_folder: %s_on_%s_budget%04dxD '
