@@ -1,0 +1,53 @@
+\begin{thebibliography}{}
+
+\bibitem[Hansen, 2009]{hansen2009benchmarking}
+Hansen, N. (2009).
+\newblock Benchmarking a bi-population cma-es on the bbob-2009 function
+  testbed.
+\newblock In {\em Proceedings of the 11th Annual Conference Companion on
+  Genetic and Evolutionary Computation Conference: Late Breaking Papers}, pages
+  2389--2396. ACM.
+
+\bibitem[Hansen et~al., 2015]{DBLP:reference/sp/HansenAA15}
+Hansen, N., Arnold, D.~V., and Auger, A. (2015).
+\newblock Evolution strategies.
+\newblock In {\em Springer Handbook of Computational Intelligence}, pages
+  871--898.
+
+\bibitem[Hansen et~al., 2016a]{DBLP:journals/corr/HansenABTT16}
+Hansen, N., Auger, A., Brockhoff, D., Tusar, D., and Tusar, T. (2016a).
+\newblock {COCO:} performance assessment.
+\newblock {\em CoRR}, abs/1605.03560.
+
+\bibitem[Hansen et~al., 2016b]{DBLP:journals/corr/HansenAMTB16}
+Hansen, N., Auger, A., Mersmann, O., Tusar, T., and Brockhoff, D. (2016b).
+\newblock {COCO:} {A} platform for comparing continuous optimizers in a
+  black-box setting.
+\newblock {\em CoRR}, abs/1603.08785.
+
+\bibitem[Hansen et~al., 2010]{Hansen:2010:CRA:1830761.1830790}
+Hansen, N., Auger, A., Ros, R., Finck, S., and Po\v{s}\'{\i}k, P. (2010).
+\newblock Comparing results of 31 algorithms from the black-box optimization
+  benchmarking bbob-2009.
+\newblock In {\em Proceedings of the 12th Annual Conference Companion on
+  Genetic and Evolutionary Computation}, GECCO '10, pages 1689--1696, New York,
+  NY, USA. ACM.
+
+\bibitem[Hansen et~al., 2011]{hansen:inria-00597334}
+Hansen, N., Finck, S., and Ros, R. (2011).
+\newblock {COCO - COmparing Continuous Optimizers : The Documentation}.
+\newblock Research Report RT-0409, {INRIA}.
+
+\bibitem[Hansen et~al., 2016c]{DBLP:journals/corr/HansenTMAB16}
+Hansen, N., Tusar, T., Mersmann, O., Auger, A., and Brockhoff, D. (2016c).
+\newblock {COCO:} the experimental procedure.
+\newblock {\em CoRR}, abs/1603.08776.
+
+\bibitem[Ros, 2009]{ros2009benchmarking}
+Ros, R. (2009).
+\newblock Benchmarking the bfgs algorithm on the bbob-2009 function testbed.
+\newblock In {\em Proceedings of the 11th Annual Conference Companion on
+  Genetic and Evolutionary Computation Conference: Late Breaking Papers}, pages
+  2409--2414. ACM.
+
+\end{thebibliography}

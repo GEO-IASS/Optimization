@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: IntermediateReport.aux
+The style file: apalike.bst
+Database file #1: biblio-bibtex.bib
+A bad cross reference---entry "DBLP:reference/sp/HansenAA15"
+refers to entry "DBLP:reference/sp/2015ci", which doesn't exist
+Warning--I didn't find a database entry for "DBLP:reference/sp/2015ci"
+Warning--empty publisher in DBLP:reference/sp/HansenAA15
+You've used 8 entries,
+            1935 wiz_defined-function locations,
+            525 strings with 5450 characters,
+and the built_in function-call counts, 3837 in all, are:
+= -- 388
+> -- 162
+< -- 7
++ -- 58
+- -- 56
+* -- 294
+:= -- 632
+add.period$ -- 27
+call.type$ -- 8
+change.case$ -- 68
+chr.to.int$ -- 6
+cite$ -- 9
+duplicate$ -- 165
+empty$ -- 258
+format.name$ -- 64
+if$ -- 792
+int.to.chr$ -- 3
+int.to.str$ -- 0
+missing$ -- 7
+newline$ -- 43
+num.names$ -- 24
+pop$ -- 69
+preamble$ -- 1
+purify$ -- 68
+quote$ -- 0
+skip$ -- 137
+stack$ -- 0
+substring$ -- 248
+swap$ -- 50
+text.length$ -- 5
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 48
+warning$ -- 1
+while$ -- 28
+width$ -- 0
+write$ -- 111
+(There was 1 error message)
