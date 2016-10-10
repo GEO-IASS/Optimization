@@ -1,1 +1,2 @@
-03/10/2016 : L'algorithme 2 est impl�ment� et tourne. 
+03/10/2016 : L'algorithme 2 est implémenté et tourne. 
+08/10/2016 : Modification de l'algorithme 2. Il y avait un problème d'implémentation. X est maintenant initialisé entre -5 et 5. Sigma entre 0 et 0.01. Et le budget n'est plus le nombre d'ittérations mais le nombre de fois ou une fonction est évaluée. Les tests ont été lancés pour 500, 1000 et 5000
