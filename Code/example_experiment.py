@@ -184,6 +184,9 @@ def algorithme2(fun, n, lambd, budget):
     X = 10 * np.random.random_sample([n]) - 5
     # We want to have sigma very small at the beginning
     sigma = 0.01*np.random.random_sample([n])
+    
+    #stopping criteria 2
+    sigma0 = 1e-12 * sigma
 
     global_step_size = np.zeros(lambd)
     coordinate_wise_sigma = np.zeros((lambd, n))
@@ -229,7 +232,12 @@ def algorithme2(fun, n, lambd, budget):
         sigma /= float(mu)
         X /= float(mu)
         budget -= lambd # We evaluated the function lambda times
-
+        
+        #stopping criteria 2
+        #if the standard deviation is 10^-12 times smaller than the first standard deviation
+        #than break
+        if(sigma < sigma0).all():
+            break
 
     return population[0][0]
 
