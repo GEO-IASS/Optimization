@@ -197,7 +197,7 @@ def algorithme2(fun, n, lambd, budget):
             new_min = min(min([c[2] for c in population]),min_1)
             if abs(new_max-new_min) <=critere:
                 break
-            best_vals.pop()
+            best_vals.pop(0)
         # recombination
         sigma = 0; X = 0
         for (xk, sigk, fxk) in population:
