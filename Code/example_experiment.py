@@ -176,6 +176,10 @@ def algorithme2(fun, n, lambd, budget):
     t1 = 1/np.sqrt(n**(1/4))
     population = []
 
+    threshold_criteria1 = 10**(-12)
+    nb_best = 10 + np.ceil(30*n/lambd)
+    last_best = []
+
     # We generate randoms numbers between -5 and 5 because we know than the minimum is around here
     X = 10 * np.random.random_sample([n]) - 5
     # We want to have sigma very small at the beginning
@@ -200,6 +204,23 @@ def algorithme2(fun, n, lambd, budget):
         childs.sort(key=lambda xsf: xsf[2])
         population = childs[:mu]
 
+        # We keep the best value for each itteration
+        last_best.append(population[0][2])
+
+        # Stopping criteria 1
+        if len(last_best) >= nb_best:
+            max_bests, min_bests = max(last_best), min(last_best)
+            if abs(max_bests - min_bests) == 0.0:
+                break
+
+            max_last_gen = max(population, key=lambda item:item[2])[2]
+            min_last_gen = min(population, key=lambda item:item[2])[2]
+
+            max_bests = max_last_gen if max_last_gen > max_bests else max_bests
+            min_bests = min_last_gen if min_bests > min_last_gen else min_bests
+            if abs(max_bests - min_bests) <= threshold_criteria1:
+                break
+
         # recombination
         sigma = 0; X = 0
         for (xk, sigk, fxk) in population:
@@ -208,6 +229,7 @@ def algorithme2(fun, n, lambd, budget):
         sigma /= float(mu)
         X /= float(mu)
         budget -= lambd # We evaluated the function lambda times
+
 
     return population[0][0]
 
@@ -270,7 +292,7 @@ def coco_optimize(solver, fun, max_evals, max_runs=1e9):
             solver(fun, fun.lower_bounds, fun.upper_bounds,
                    remaining_evals)
         elif solver.__name__ in ("algorithme2"):
-            solver(fun, fun.dimension, 5 *fun.dimension, remaining_evals)
+                solver(fun, fun.dimension, 5 *fun.dimension + (5*fun.dimension*restarts), remaining_evals)
 
         elif solver.__name__ == 'fmin' and solver.__globals__['__name__'] in ['cma', 'cma.evolution_strategy', 'cma.es']:
             if x0[0] == center[0]:
