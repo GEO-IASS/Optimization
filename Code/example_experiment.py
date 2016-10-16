@@ -177,7 +177,7 @@ def algorithme2(fun, n, lambd, budget):
     population = []
 
     threshold_criteria1 = 10**(-12)
-    nb_best = 10 + np.ceil(30*n/lambd)
+    nb_best = 10 + int(np.ceil(30*n/lambd))
     last_best = []
 
     # We generate randoms numbers between -5 and 5 because we know than the minimum is around here
@@ -212,6 +212,7 @@ def algorithme2(fun, n, lambd, budget):
 
         # Stopping criteria 1
         if len(last_best) >= nb_best:
+            last_best = last_best[-nb_best:]
             max_bests, min_bests = max(last_best), min(last_best)
             if abs(max_bests - min_bests) == 0.0:
                 break
