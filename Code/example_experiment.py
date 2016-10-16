@@ -1,33 +1,22 @@
 #!/usr/bin/env python
 """Python script for the COCO experimentation module `cocoex`.
-
 Usage from a system shell::
-
     python example_experiment.py bbob
-
 runs a full but short experiment on the bbob suite. The optimization
 algorithm used is determined by the `SOLVER` attribute in this file.
-
     python example_experiment.py bbob 20
-
 runs the same experiment but with a budget of 20 * dimension
 f-evaluations.
-
     python example_experiment.py bbob-biobj 1e3 1 20
-
 runs the first of 20 batches with maximal budget of
 1000 * dimension f-evaluations on the bbob-biobj suite.
 All batches must be run to generate a complete data set.
-
 Usage from a python shell::
-
     >>> import example_experiment as ee
     >>> ee.suite_name = "bbob-biobj"
     >>> ee.main(5, 100, 100)  # doctest: +ELLIPSIS
     Benchmarking solver...
-
 runs the last of 100 batches with budget 5 * dimension.
-
 Calling `example_experiment` without parameters prints this
 help and the available suite names.
 """
@@ -41,6 +30,7 @@ import numpy as np  # "pip install numpy" installs numpy
 import cocoex
 from cocoex import Suite, Observer, log_level
 verbose = 1
+from pprint import pprint
 
 try: import cma  # cma.fmin is a solver option, "pip install cma" installs cma
 except: pass
@@ -66,8 +56,7 @@ def print_flush(*args):
 
 def ascetime(sec):
     """return elapsed time as str.
-
-    Example: return `"0h33:21"` if `sec == 33*60 + 21`. 
+    Example: return `"0h33:21"` if `sec == 33*60 + 21`.
     """
     h = sec / 60**2
     m = 60 * (h - h // 1)
@@ -77,18 +66,12 @@ def ascetime(sec):
 
 class ShortInfo(object):
     """print minimal info during benchmarking.
-
     After initialization, to be called right before the solver is called with
     the respective problem. Prints nothing if only the instance id changed.
-
     Example output:
-
         Jan20 18h27:56, d=2, running: f01f02f03f04f05f06f07f08f09f10f11f12f13f14f15f16f17f18f19f20f21f22f23f24f25f26f27f28f29f30f31f32f33f34f35f36f37f38f39f40f41f42f43f44f45f46f47f48f49f50f51f52f53f54f55 done
-
         Jan20 18h27:56, d=3, running: f01f02f03f04f05f06f07f08f09f10f11f12f13f14f15f16f17f18f19f20f21f22f23f24f25f26f27f28f29f30f31f32f33f34f35f36f37f38f39f40f41f42f43f44f45f46f47f48f49f50f51f52f53f54f55 done
-
         Jan20 18h27:57, d=5, running: f01f02f03f04f05f06f07f08f09f10f11f12f13f14f15f16f17f18f19f20f21f22f23f24f25f26f27f28f29f30f31f32f33f34f35f36f37f38f39f40f41f42f43f44f45f46f47f48f49f50f51f52f53f54f55 done
-
     """
     def __init__(self):
         self.f_current = None  # function id (not problem id)
@@ -186,6 +169,9 @@ def algorithme2(fun, n, lambd, budget):
     vector_sigma = np.zeros((lambd, n))
     vector_x = np.zeros((lambd, n))
     z = np.zeros((lambd, n))
+    size_ = 10+(30*n/lambd)
+    critere = 10**(-12)
+    best_vals = []
     while budget > 0:
         for k in range(0, lambd):
             global_step_size[k] = t * np.random.normal()
@@ -200,6 +186,18 @@ def algorithme2(fun, n, lambd, budget):
         childs.sort(key=lambda xsf: xsf[2])
         population = childs[:mu]
 
+        #stoping 1
+        best_vals.append(population[0][2])
+        if len(best_vals)>=size_:
+            max_1 = max(best_vals)
+            min_1 = min(best_vals)
+            if abs(min_1 - max_1) == 0.0:
+                break
+            new_max = max(max([c[2] for c in population]),max_1)
+            new_min = min(min([c[2] for c in population]),min_1)
+            if abs(new_max-new_min) <=critere:
+                break
+            best_vals.pop()
         # recombination
         sigma = 0; X = 0
         for (xk, sigk, fxk) in population:
@@ -208,6 +206,7 @@ def algorithme2(fun, n, lambd, budget):
         sigma /= float(mu)
         X /= float(mu)
         budget -= lambd # We evaluated the function lambda times
+
 
     return population[0][0]
 
@@ -246,12 +245,10 @@ def batch_loop(solver, suite, observer, budget,
 #===============================================
 def coco_optimize(solver, fun, max_evals, max_runs=1e9):
     """`fun` is a callable, to be optimized by `solver`.
-
     The `solver` is called repeatedly with different initial solutions
     until either the `max_evals` are exhausted or `max_run` solver calls
     have been made or the `solver` has not called `fun` even once
     in the last run.
-
     Return number of (almost) independent runs.
     """
     range_ = fun.upper_bounds - fun.lower_bounds
@@ -314,7 +311,7 @@ def coco_optimize(solver, fun, max_evals, max_runs=1e9):
 # ===============================================
 ######################### CHANGE HERE ########################################
 # CAVEAT: this might be modified from input args
-budget = 10  # maxfevals = budget x dimension ### INCREASE budget WHEN THE DATA CHAIN IS STABLE ###
+budget = 100  # maxfevals = budget x dimension ### INCREASE budget WHEN THE DATA CHAIN IS STABLE ###
 max_runs = 1e9  # number of (almost) independent trials per problem instance
 number_of_batches = 1  # allows to run everything in several batches
 current_batch = 1      # 1..number_of_batches
@@ -324,7 +321,7 @@ SOLVER = algorithme2
 suite_name = "bbob-biobj"
 # suite_name = "bbob"
 suite_instance = "year:2016"
-suite_options = "dimensions: 2,3,5 "  # "dimensions: 2,3,5,10,20 "  # if 40 is not desired
+suite_options = "dimensions: 2 "  # "dimensions: 2,3,5,10,20 "  # if 40 is not desired
 observer_name = default_observers()[suite_name]
 observer_options = (
     ' result_folder: %s_on_%s_budget%04dxD '
@@ -380,4 +377,4 @@ if __name__ == '__main__':
             for i in range(5, len(sys.argv))]
         messages.append('See "python example_experiment.py -h" for help.')
         raise ValueError('\n'.join(messages))
-    main(budget, max_runs, current_batch, number_of_batches)
+main(budget, max_runs, current_batch, number_of_batches)
